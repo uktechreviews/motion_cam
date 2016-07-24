@@ -13,6 +13,7 @@ yellow = LED(16)
 button = Button(15)
 dropbox = Button(21)
 led_drop = LED(20)
+stop = Button(26)
 # Raspberry Pi hardware SPI config:
 DC = 23
 RST = 24
@@ -104,7 +105,14 @@ with PiCamera() as camera:
 	print (file_count)
 	frame = 1 + file_count
         while True:
-                button.wait_for_press()
+                if stop.is_pressed:
+			draw.rectangle((0,0,LCD.LCDWIDTH,LCD.LCDHEIGHT), outline=255, fill=255)
+        		draw.text((3,20), 'Safe stop', font=font)
+        		disp.image(image)
+        		disp.display()
+        		time.sleep(2)
+        		subprocess.call('sudo halt', shell=True)
+		button.wait_for_press()
                 yellow.source = button.values
                 draw.rectangle((0,0,LCD.LCDWIDTH,LCD.LCDHEIGHT), outline=255, fill=255)
 		#disp.image(image)
